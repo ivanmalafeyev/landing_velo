@@ -843,6 +843,89 @@ Array.prototype.forEach.call(img, function (value) {
   }
 });
 ;
+var PLACEHOLDER_OPACITY = 0.5;
+var inputs = document.querySelectorAll(".input");
+
+if (inputs) {
+  [].forEach.call(inputs, function (e) {
+    var dv = e.getAttribute("data-value");
+    var isPlaceholder = true;
+    e.isPlaceholder = isPlaceholder;
+
+    if (dv) {
+      e.style.color = "rgba(146, 146, 146, ".concat(PLACEHOLDER_OPACITY, ")");
+      e.value = dv;
+    }
+
+    e.addEventListener("focus", function () {
+      if (isPlaceholder) {
+        e.value = "";
+        isPlaceholder = false;
+        e.isPlaceholder = isPlaceholder;
+        e.style.color = "rgba(146, 146, 146, 1)";
+      }
+    });
+    e.addEventListener("blur", function () {
+      if (e.value === "") {
+        e.value = dv;
+        isPlaceholder = true;
+        e.isPlaceholder = isPlaceholder;
+        e.style.color = "rgba(146, 146, 146, ".concat(PLACEHOLDER_OPACITY, ")");
+      }
+    });
+  });
+}
+
+var form = document.querySelector(".form");
+
+if (form) {
+  form.addEventListener("submit", function (e) {
+    if (formValidate(form) === 0) {//
+    } else {
+      e.preventDefault();
+    }
+  });
+}
+
+function formValidate() {
+  var error = 0;
+  var formReq = document.querySelectorAll(".req");
+  [].forEach.call(formReq, function (e) {
+    formRemoveError(e);
+
+    if (e.classList.contains("email")) {
+      if (emailTest(e)) {
+        formAddError(e);
+        error++;
+      }
+    } else if (e.getAttribute("type") === "checkbox" && e.checked === false) {
+      formAddError(e);
+      error++;
+    } else {
+      if (e.value === "" || e.isPlaceholder) {
+        formAddError(e);
+        error++;
+      }
+    }
+  });
+  return error;
+}
+
+function formAddError(input) {
+  input.parentElement.classList.add("err");
+  input.classList.add("err");
+}
+
+function formRemoveError(input) {
+  input.parentElement.classList.remove("err");
+  input.classList.remove("err");
+}
+
+function emailTest(input) {
+  return !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,8})+$/.test(input.value);
+}
+
+;
 var menuIcon = document.querySelector(".icon-menu");
 var menu = document.querySelector(".menu__body");
 var links = document.querySelectorAll(".menu__link"); //smooth scroll from first fullscreen to content

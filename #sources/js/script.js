@@ -4,6 +4,7 @@
 @@include("webp.js");
 @@include("slick.min.js");
 @@include("ibg.js");
+@@include("forms.js");
 @@include("responsive.js");
 
 $(document).ready(function () {
